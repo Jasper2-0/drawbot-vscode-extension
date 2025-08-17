@@ -1,0 +1,229 @@
+{
+  "name": "drawbot-sketchbook",
+  "displayName": "DrawBot Sketchbook",
+  "description": "Live preview and execution environment for DrawBot sketches with native VS Code integration",
+  "version": "0.1.0",
+  "publisher": "jasper2-0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jasper2-0/drawbot-vscode-extension.git"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "drawbot",
+    "python",
+    "graphics",
+    "art",
+    "visualization",
+    "live-preview"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/*.py",
+    "onCommand:drawbot.startServer",
+    "onLanguage:python"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "drawbot-workbench",
+          "title": "DrawBot",
+          "icon": "$(paintbrush)"
+        }
+      ]
+    },
+    "views": {
+      "drawbot-workbench": [
+        {
+          "id": "drawbot-sketches",
+          "name": "Sketches",
+          "when": "true"
+        },
+        {
+          "id": "drawbot-examples",
+          "name": "Examples",
+          "when": "true"
+        },
+        {
+          "id": "drawbot-templates",
+          "name": "Templates",
+          "when": "true"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "drawbot.startServer",
+        "title": "Start Live Preview Server",
+        "category": "DrawBot",
+        "icon": "$(play)"
+      },
+      {
+        "command": "drawbot.stopServer",
+        "title": "Stop Live Preview Server",
+        "category": "DrawBot",
+        "icon": "$(stop)"
+      },
+      {
+        "command": "drawbot.executeSketch",
+        "title": "Execute Sketch",
+        "category": "DrawBot",
+        "icon": "$(run)"
+      },
+      {
+        "command": "drawbot.openPreview",
+        "title": "Open Preview",
+        "category": "DrawBot",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "drawbot.refreshSketches",
+        "title": "Refresh Sketches",
+        "category": "DrawBot",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "drawbot.createFromTemplate",
+        "title": "Create Sketch from Template",
+        "category": "DrawBot",
+        "icon": "$(add)"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "drawbot.executeSketch",
+          "when": "resourceExtname == .py",
+          "group": "drawbot@1"
+        },
+        {
+          "command": "drawbot.openPreview",
+          "when": "resourceExtname == .py",
+          "group": "drawbot@2"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "drawbot.refreshSketches",
+          "when": "view == drawbot-sketches",
+          "group": "navigation"
+        },
+        {
+          "command": "drawbot.createFromTemplate",
+          "when": "view == drawbot-templates",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "drawbot.executeSketch",
+        "key": "cmd+shift+d",
+        "mac": "cmd+shift+d",
+        "win": "ctrl+shift+d",
+        "when": "editorTextFocus && resourceExtname == .py"
+      },
+      {
+        "command": "drawbot.openPreview",
+        "key": "cmd+k v",
+        "mac": "cmd+k v",
+        "win": "ctrl+k v",
+        "when": "editorTextFocus && resourceExtname == .py"
+      }
+    ],
+    "configuration": {
+      "title": "DrawBot Sketchbook",
+      "properties": {
+        "drawbot.serverPort": {
+          "type": "number",
+          "default": 8083,
+          "description": "Port for the DrawBot live preview server"
+        },
+        "drawbot.autoExecuteOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically execute sketch when file is saved"
+        },
+        "drawbot.previewImageMaxSize": {
+          "type": "number",
+          "default": 1024,
+          "description": "Maximum size for preview images (pixels)"
+        },
+        "drawbot.pythonPath": {
+          "type": "string",
+          "default": "auto",
+          "description": "Path to Python executable (auto to detect automatically)"
+        },
+        "drawbot.virtualEnvPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to virtual environment"
+        },
+        "drawbot.enableLiveReload": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable live reload of previews when files change"
+        }
+      }
+    },
+    "customEditors": [
+      {
+        "viewType": "drawbot.preview",
+        "displayName": "DrawBot Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.py"
+          }
+        ],
+        "priority": "option"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "webpack --mode production",
+    "compile-dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "test:integration": "node ./out/test/runTests.js",
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "pretest": "npm run compile && npm run lint"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "@types/node": "^18.x",
+    "@types/ws": "^8.x",
+    "@types/uuid": "^9.x",
+    "@typescript-eslint/eslint-plugin": "^5.x",
+    "@typescript-eslint/parser": "^5.x",
+    "@vscode/test-electron": "^2.3.0",
+    "@vscode/vsce": "^2.x",
+    "eslint": "^8.x",
+    "typescript": "^4.9.0",
+    "webpack": "^5.x",
+    "webpack-cli": "^4.x",
+    "ts-loader": "^9.x",
+    "vitest": "^0.34.0",
+    "sinon": "^15.x",
+    "msw": "^1.x",
+    "@vitest/coverage-v8": "^0.34.0"
+  },
+  "dependencies": {
+    "axios": "^1.x",
+    "ws": "^8.x",
+    "uuid": "^9.x"
+  }
+}
